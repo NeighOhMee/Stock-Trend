@@ -9,7 +9,7 @@
 #include <chrono>
 
 int main(int argc, char const *argv[])
-{
+{	//test comment
 	std::string stockSymbol;
 	std::ifstream inFile("symbols.txt");
 	if (!inFile.is_open())
