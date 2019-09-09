@@ -83,7 +83,7 @@ def createTable(stockSymbol):
 
     Table_List = p.tables
     appleStockPrice = pd.DataFrame.from_dict(Table_List[2])
-    #print(Table_List[2])
+    
 
     appleStockPrice.to_csv('output.csv', na_rep='', float_format=None, 
     	columns =None, header =0, index = False, index_label=None,

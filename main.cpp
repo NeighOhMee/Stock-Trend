@@ -9,7 +9,7 @@
 #include <chrono>
 
 int main(int argc, char const *argv[])
-{	//test comment
+{	
 	std::string stockSymbol;
 	std::ifstream inFile("symbols.txt");
 	if (!inFile.is_open())
@@ -17,9 +17,7 @@ int main(int argc, char const *argv[])
 		std::cerr << "Can't find symbols.txt, check the file directory" << std::endl;
 		return 1;
 	}
-	//std::cout << "Enter the stock symbol you wish to check: ";
-	//std::cin >> stockSymbol;
-	
+	//sets up the python environment
 	PyObject *pName, *pModule, *pFunc;
 	PyObject *pArgs, *pValue;
 	Py_Initialize();
@@ -31,21 +29,11 @@ int main(int argc, char const *argv[])
 	pModule = PyImport_Import(pName);
 	Py_DECREF(pName);
 	auto start = std::chrono::high_resolution_clock::now();
+	//runs the python script to create a csv file then allows the main program to put that data into
+	//a class
 	while (inFile >> stockSymbol)
 	{
 		const char *c = stockSymbol.c_str();
-		/*
-		PyObject *pName, *pModule, *pFunc;
-		PyObject *pArgs, *pValue;
-		Py_Initialize();
-		PyRun_SimpleString("import sys");
-		PyRun_SimpleString("sys.path.append(\".\")");
-		pName = PyUnicode_FromString("webscrape");
-		// Error checking of pName left out 
-
-		pModule = PyImport_Import(pName);
-		Py_DECREF(pName);
-		*/
 		if (pModule != NULL) {
 			pFunc = PyObject_GetAttrString(pModule, "createTable");
 			/* pFunc is a new reference */
@@ -101,55 +89,12 @@ int main(int argc, char const *argv[])
 		}
 		//Py_Finalize();
 
+		//prints 1 if the stock follows the behavior and 0 if it does not
 		Stock apple("output.csv");
 		std::cout << apple.exhibitsBehavior("2019/05/16") << std::endl;
 		std::string command;
-		/*
-		while (std::cin >> command)
-		{
-			if (command == "q") break;
-			else if (command == "data")
-			{
-				std::string date;
-				std::cin >> date;
-				apple.printData(date);
-				std::cout << std::endl;
-			}
-			
-			else if(command == "trend")
-			{
-				std::string date1, date2;
-				std::cin >> date1;
-				std::cin >> date2;
-				std::cout << apple.findTrend(date1, date2) << std::endl;
-				std::cout << std::endl;
-			}
-			
-			else if (command == "shorttrend")
-			{
-				std::string startDate;
-				std::cin >> startDate;
-				std::cout << apple.currentTrendShort(startDate) << std::endl;
-			}
-			else if (command == "longtrend")
-			{
-				std::string startDate;
-				std::cin >> startDate;
-				apple.currentTrend(startDate);
-			}
-			else if (command == "behavior")
-			{
-				std::string startDate;
-				std::cin >> startDate;
-				std::cout << apple.exhibitsBehavior(startDate) << std::endl;
-			}
-			else
-			{
-				std::cout << "Unknown command" << std::endl;
-			}
-		}
-		*/
 	}
+	//checking how long the program runs
 	auto stop = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 	std::cout << duration.count();
